@@ -35,6 +35,7 @@ export default function Canvas(props: CanvasProps) {
           stencil: false,
           alpha: true,
         });
+        renderer.setPixelRatio(Math.min(2, devicePixelRatio));
         await renderer.init();
         return renderer;
       }}

@@ -1,10 +1,11 @@
-import { OrbitControls, Stats } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { Leva } from "leva";
 import { ui } from "./utils/tunnels";
 import Canvas from "./components/canvas";
 import Lights from "./components/lights";
-import MorphParticles from "./components/morph-particles/morph-particles";
-import { CreditOverlay } from "./components/credit-overlay";
+import MorphScene from "./components/morph-particles/morph-scene";
+import CreditOverlay from "./components/ui/credit-overlay";
+import { customTheme } from "./utils/leva";
 
 export default function App() {
   return (
@@ -23,12 +24,11 @@ export default function App() {
         &#41;
       </CreditOverlay>
 
-      <Leva theme={{ sizes: { rootWidth: "20rem" } }} hideCopyButton />
-      <Canvas camera={{ position: [4, 4, 4] }}>
-        <OrbitControls />
-        <MorphParticles position={[0, -1, -1]} />
+      <Leva theme={customTheme} hideCopyButton flat />
+      <Canvas camera={{ position: [-2.53, 1.28, 4.76] }}>
+        <OrbitControls makeDefault target={[0.68, -0.05, 0.31]} />
         <Lights />
-        <Stats />
+        <MorphScene position={[0, -1, -1]} />
       </Canvas>
     </>
   );

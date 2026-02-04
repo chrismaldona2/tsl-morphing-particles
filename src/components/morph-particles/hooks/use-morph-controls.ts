@@ -1,3 +1,6 @@
+/*
+ * Disabled hooks immutability lintern on purpose as TSL Uniforms values are safe to modify
+ */
 /* eslint-disable react-hooks/immutability */
 import { useControls, folder } from "leva";
 import { useCallback, useEffect, useMemo, useRef } from "react";
@@ -11,13 +14,7 @@ import {
 } from "../config";
 import type { MeshAsset } from "./use-morph-meshes";
 import { capitalize } from "@/utils/capitalize";
-import {
-  AdditiveBlending,
-  MultiplyBlending,
-  NoBlending,
-  NormalBlending,
-  SubtractiveBlending,
-} from "three";
+import { AdditiveBlending, NormalBlending } from "three";
 
 type MorphControlsValues = Omit<ParticlesMorphParams, "resolution"> & {
   particleStyle: ParticleStyleName;
@@ -27,8 +24,9 @@ export function useMorphControls(
   uniforms: ParticlesMorphUniforms,
   meshes: MeshAsset[],
 ) {
-  const isAnimating = useRef(false);
+  const isAnimating = useRef(false); // To prevent the Leva slider from fighting GSAP
   const durationRef = useRef(config.animationDuration);
+  const targetRef = useRef(config.animationProgress > 0.5 ? 1 : 0);
 
   const meshesOptions = useMemo(() => {
     return meshes.reduce(
@@ -44,28 +42,28 @@ export function useMorphControls(
   const [controls, set] = useControls(
     "🧬 Morphing",
     () => ({
-      meshA: {
+      meshAIndex: {
         label: "Start Mesh",
         options: meshesOptions,
-        value: config.meshA,
+        value: config.meshAIndex,
         onChange: (id: number) => {
-          uniforms.meshA.value = id;
+          uniforms.meshAIndex.value = id;
           const mesh = meshes.find((l) => l.id === id);
           if (mesh) uniforms.mapA.value = mesh.texture;
         },
       },
-      meshB: {
+      meshBIndex: {
         label: "End Mesh",
         options: meshesOptions,
-        value: config.meshB,
+        value: config.meshBIndex,
         onChange: (id: number) => {
-          uniforms.meshB.value = id;
+          uniforms.meshBIndex.value = id;
           const mesh = meshes.find((l) => l.id === id);
           if (mesh) uniforms.mapB.value = mesh.texture;
         },
       },
 
-      "Morph Animation": folder({
+      Animation: folder({
         animationProgress: {
           label: "Progress",
           value: config.animationProgress,
@@ -100,7 +98,8 @@ export function useMorphControls(
           label: "Chaos Amplitude",
           value: config.animationChaosAmplitude,
           min: 0,
-          max: 5,
+          max: 1.5,
+          step: 0.01,
           onChange: (v: number) => {
             uniforms.animationChaosAmplitude.value = v;
           },
@@ -109,7 +108,8 @@ export function useMorphControls(
           label: "Chaos Frequency",
           value: config.animationChaosFrequency,
           min: 0,
-          max: 3,
+          max: 0.5,
+          step: 0.01,
           onChange: (v: number) => {
             uniforms.animationChaosFrequency.value = v;
           },
@@ -132,16 +132,45 @@ export function useMorphControls(
           min: 0,
           max: 0.2,
           step: 0.001,
-          onChange: (v: number) => (uniforms.particleSize.value = v),
+          onChange: (v: number) => {
+            uniforms.particleSize.value = v;
+          },
+        },
+        particleGlowSpread: {
+          label: "Glow Spread",
+          value: config.particleGlowSpread,
+          min: 0,
+          max: 0.5,
+          step: 0.01,
+          onChange: (v: number) => {
+            uniforms.particleGlowSpread.value = v;
+          },
+        },
+        particleSharpness: {
+          label: "Sharpness",
+          value: config.particleSharpness,
+          min: 0,
+          max: 5,
+          step: 0.1,
+          onChange: (v: number) => {
+            uniforms.particleSharpness.value = v;
+          },
+        },
+        particleAlphaCutoff: {
+          label: "Alpha Cutoff",
+          value: config.particleAlphaCutoff,
+          min: 0,
+          max: 0.5,
+          step: 0.01,
+          onChange: (v: number) => {
+            uniforms.particleAlphaCutoff.value = v;
+          },
         },
         blending: {
           label: "Blending",
           options: {
             "Additive Blending": AdditiveBlending,
             "Normal Blending": NormalBlending,
-            "No Blending": NoBlending,
-            "Subtractive Blending": SubtractiveBlending,
-            "Multiply Blending": MultiplyBlending,
           },
           value: config.blending,
         },
@@ -160,17 +189,21 @@ export function useMorphControls(
           label: "Amplitude",
           value: config.oscillationAmplitude,
           min: 0,
-          max: 0.5,
+          max: 0.1,
           step: 0.001,
-          onChange: (v: number) => (uniforms.oscillationAmplitude.value = v),
+          onChange: (v: number) => {
+            uniforms.oscillationAmplitude.value = v;
+          },
         },
         oscillationSpeed: {
           label: "Speed",
           value: config.oscillationSpeed,
           min: 0,
-          max: 2,
+          max: 1,
           step: 0.01,
-          onChange: (v: number) => (uniforms.oscillationSpeed.value = v),
+          onChange: (v: number) => {
+            uniforms.oscillationSpeed.value = v;
+          },
         },
       }),
     }),
@@ -183,29 +216,37 @@ export function useMorphControls(
   useEffect(() => {
     const s = particleStyles[controls.particleStyle];
     if (!s) return;
-    set({ particleSize: s.particleSize });
-    uniforms.shapeRadius.value = s.shapeRadius;
-    uniforms.shapeTurnOff.value = s.shapeTurnOff;
-    uniforms.shapeHardness.value = s.shapeHardness;
+    set({
+      particleSize: s.particleSize,
+      particleGlowSpread: s.particleGlowSpread,
+      particleAlphaCutoff: s.particleAlphaCutoff,
+      particleSharpness: s.particleSharpness,
+    });
+
+    uniforms.particleSize.value = s.particleSize;
+    uniforms.particleGlowSpread.value = s.particleGlowSpread;
+    uniforms.particleAlphaCutoff.value = s.particleAlphaCutoff;
+    uniforms.particleSharpness.value = s.particleSharpness;
   }, [controls.particleStyle, set, uniforms]);
 
-  const trigger = useCallback(async () => {
-    if (isAnimating.current) return;
-    isAnimating.current = true;
+  const trigger = useCallback(() => {
+    const nextTarget = targetRef.current === 0 ? 1 : 0;
+    targetRef.current = nextTarget;
 
     const currentProgress = uniforms.animationProgress.value;
-    const targetProgress = currentProgress < 0.5 ? 1 : 0;
+    const distance = Math.abs(nextTarget - currentProgress);
+    const time = durationRef.current * distance;
 
-    await new Promise<void>((resolve) => {
-      gsap.to(uniforms.animationProgress, {
-        value: targetProgress,
-        duration: durationRef.current,
-        ease: "none",
-        onComplete: () => {
-          isAnimating.current = false;
-          resolve();
-        },
-      });
+    gsap.killTweensOf(uniforms.animationProgress);
+    isAnimating.current = true;
+
+    gsap.to(uniforms.animationProgress, {
+      value: nextTarget,
+      duration: time,
+      ease: "none",
+      onComplete: () => {
+        isAnimating.current = false;
+      },
     });
   }, [uniforms]);
 

@@ -11,33 +11,32 @@ import {
  * Material Config
  *
  */
-
 // Particle style (Shape)
 export type ParticleStyleParams = {
   particleSize: number;
-  shapeRadius: number;
-  shapeTurnOff: number;
-  shapeHardness: number;
+  particleGlowSpread: number;
+  particleAlphaCutoff: number;
+  particleSharpness: number;
 };
 
 export const particleStyles: Record<string, ParticleStyleParams> = {
   glow: {
     particleSize: 0.1,
-    shapeRadius: 0.05,
-    shapeTurnOff: 0.1,
-    shapeHardness: 1.0,
+    particleGlowSpread: 0.05,
+    particleAlphaCutoff: 0.1,
+    particleSharpness: 1.0,
   },
   hard: {
     particleSize: 0.03,
-    shapeRadius: 0.4,
-    shapeTurnOff: 0.0,
-    shapeHardness: 50.0,
+    particleGlowSpread: 0.4,
+    particleAlphaCutoff: 0.25,
+    particleSharpness: 5.0,
   },
   smooth: {
     particleSize: 0.1,
-    shapeRadius: 0.1,
-    shapeTurnOff: 0.2,
-    shapeHardness: 2.0,
+    particleGlowSpread: 0.1,
+    particleAlphaCutoff: 0.2,
+    particleSharpness: 2.0,
   },
 } as const;
 
@@ -53,8 +52,8 @@ export type ParticlesSystemParams = {
 
 // Shader Params
 export type ParticlesAnimationParams = {
-  meshA: number;
-  meshB: number;
+  meshAIndex: number;
+  meshBIndex: number;
   animationProgress: number;
   animationDuration: number;
   animationSynchronization: number;
@@ -69,16 +68,22 @@ export type ParticlesMorphParams = ParticlesSystemParams &
 
 export const particlesMorphingConfig: ParticlesMorphParams = {
   // System
+  /*
+   * 'Resolution' defines the dimensions (width x height) of the DataTexture
+   * The relationship is strictly 1:1 between pixels and particles
+   * Each pixel stores the data (Position, Scale) for exactly one particle
+   * Total Particles = resolution * resolution
+   */
   resolution: 128,
   blending: AdditiveBlending,
   depthWrite: false,
   wireframe: false,
 
   // Shader
-  meshA: 0,
-  meshB: 1,
+  meshAIndex: 4,
+  meshBIndex: 8,
   animationProgress: 0,
-  animationDuration: 2.15,
+  animationDuration: 2,
   animationSynchronization: 0.55,
   animationChaosAmplitude: 0.65,
   animationChaosFrequency: 0.2,
@@ -109,7 +114,9 @@ export type ModelsGLB = {
     parrot: Mesh;
     plane: Mesh;
     r2d2: Mesh;
-    rinho: Mesh;
+    rhino: Mesh;
+    cat: Mesh;
+    parrots: Mesh;
   };
 };
 
@@ -186,7 +193,7 @@ export const credits: Record<MeshName, ModelCredit> = {
       profile: "https://sketchfab.com/lars.bracke",
     },
   },
-  rinho: {
+  rhino: {
     model: {
       title: "Rhino",
       url: "https://sketchfab.com/3d-models/model-56a-southern-white-rhino-8e97b62a90f44ce19ea9e3fd421f55b4",
@@ -194,6 +201,26 @@ export const credits: Record<MeshName, ModelCredit> = {
     author: {
       name: "DigitalLife3D",
       profile: "https://sketchfab.com/DigitalLife3D",
+    },
+  },
+  parrots: {
+    model: {
+      title: "Parrots",
+      url: "https://sketchfab.com/3d-models/parrots-of-the-caribbean-f23c612a59d24a5c967ce62a9d0b1984",
+    },
+    author: {
+      name: "Eleni Kofekidou",
+      profile: "https://sketchfab.com/EleniKofekidou",
+    },
+  },
+  cat: {
+    model: {
+      title: "Cat",
+      url: "https://sketchfab.com/3d-models/bengal-cat-6d82596b5db94f7b9093814a4a88caa9",
+    },
+    author: {
+      name: "ItsKrish7",
+      profile: "https://sketchfab.com/ItsKrish7",
     },
   },
 };

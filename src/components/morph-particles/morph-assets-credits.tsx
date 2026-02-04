@@ -8,7 +8,7 @@ import {
 } from "./config";
 import { ui } from "@/utils/tunnels";
 import type { MeshAsset } from "./hooks/use-morph-meshes";
-import { CreditOverlay } from "../credit-overlay";
+import CreditOverlay from "@/components/ui/credit-overlay";
 
 type MorphCreditsProps = {
   uniforms: ParticlesMorphUniforms;
@@ -19,12 +19,12 @@ export default function MorphAssetsCredits({
   uniforms,
   meshes,
 }: MorphCreditsProps) {
-  const [visibleId, setVisibleId] = useState(config.meshA);
+  const [visibleId, setVisibleId] = useState(config.meshAIndex);
 
   useFrame(() => {
     const progress = uniforms.animationProgress.value;
-    const meshA = uniforms.meshA.value;
-    const meshB = uniforms.meshB.value;
+    const meshA = uniforms.meshAIndex.value;
+    const meshB = uniforms.meshBIndex.value;
 
     const dominantId = progress < 0.5 ? meshA : meshB;
 
