@@ -1,12 +1,13 @@
 /*
- * Disabled hooks immutability lintern on purpose as TSL Uniforms values are safe to modify
+ * Disabled hooks immutability linter on purpose as TSL Uniforms values are safe to modify
  */
 /* eslint-disable react-hooks/immutability */
 import { useControls, folder } from "leva";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import {
   particlesMorphingConfig as config,
+  morphingDebugFolderName,
   particleStyles,
   type ParticlesMorphParams,
   type ParticlesMorphUniforms,
@@ -15,6 +16,7 @@ import {
 import type { MeshAsset } from "./use-morph-meshes";
 import { capitalize } from "@/utils/capitalize";
 import { AdditiveBlending, NormalBlending } from "three";
+import { useFrame } from "@react-three/fiber";
 
 type MorphControlsValues = Omit<ParticlesMorphParams, "resolution"> & {
   particleStyle: ParticleStyleName;
@@ -24,9 +26,7 @@ export function useMorphControls(
   uniforms: ParticlesMorphUniforms,
   meshes: MeshAsset[],
 ) {
-  const isAnimating = useRef(false); // To prevent the Leva slider from fighting GSAP
-  const durationRef = useRef(config.animationDuration);
-  const targetRef = useRef(config.animationProgress > 0.5 ? 1 : 0);
+  const isAnimating = useRef(false); // To prevent Leva updates fighting GSAP
 
   const meshesOptions = useMemo(() => {
     return meshes.reduce(
@@ -39,8 +39,11 @@ export function useMorphControls(
     );
   }, [meshes]);
 
+  /*
+   * Uniforms Debug
+   */
   const [controls, set] = useControls(
-    "🧬 Morphing",
+    morphingDebugFolderName,
     () => ({
       meshAIndex: {
         label: "Start Mesh",
@@ -62,7 +65,6 @@ export function useMorphControls(
           if (mesh) uniforms.mapB.value = mesh.texture;
         },
       },
-
       Animation: folder({
         animationProgress: {
           label: "Progress",
@@ -115,7 +117,6 @@ export function useMorphControls(
           },
         },
       }),
-
       Appearance: folder({
         particleStyle: {
           label: "Style",
@@ -183,7 +184,6 @@ export function useMorphControls(
           value: config.wireframe,
         },
       }),
-
       Oscillation: folder({
         oscillationAmplitude: {
           label: "Amplitude",
@@ -229,6 +229,11 @@ export function useMorphControls(
     uniforms.particleSharpness.value = s.particleSharpness;
   }, [controls.particleStyle, set, uniforms]);
 
+  /*
+   * Logic to trigger the morphing animation
+   */
+  const durationRef = useRef(config.animationDuration);
+  const targetRef = useRef(config.animationProgress > 0.5 ? 1 : 0);
   const trigger = useCallback(() => {
     const nextTarget = targetRef.current === 0 ? 1 : 0;
     targetRef.current = nextTarget;
@@ -250,5 +255,23 @@ export function useMorphControls(
     });
   }, [uniforms]);
 
-  return { trigger, controls };
+  /*
+   * Track the active mesh ID based on animation progress
+   * Useful for debugging and to show credits for the models
+   */
+  const [activeId, setActiveId] = useState(config.meshAIndex);
+  useFrame(() => {
+    const progress = uniforms.animationProgress.value;
+    const meshA = uniforms.meshAIndex.value;
+    const meshB = uniforms.meshBIndex.value;
+
+    const currentDominant = progress < 0.5 ? meshA : meshB;
+    if (currentDominant !== activeId) setActiveId(currentDominant);
+  });
+  const activeMesh = useMemo(
+    () => meshes.find((m) => m.id === activeId),
+    [meshes, activeId],
+  );
+
+  return { trigger, controls, activeMesh };
 }

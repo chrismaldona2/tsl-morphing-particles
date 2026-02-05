@@ -12,8 +12,8 @@ export const customTheme = {
     vivid1: "#ffcc00",
   },
   sizes: {
-    rootWidth: "260px",
-    controlWidth: "120px",
+    rootWidth: "325px",
+    controlWidth: "150px",
     rowHeight: "20px",
     titleBarHeight: "28px",
     scrubberHeight: "14px",
@@ -22,13 +22,13 @@ export const customTheme = {
     joystickHeight: "80px",
   },
   space: {
-    rowGap: "8px",
+    rowGap: "10px",
     colGap: "4px",
     md: "6px",
   },
   fontSizes: {
-    root: "10px",
-    toolTip: "10px",
+    root: "12px",
+    toolTip: "12px",
   },
   radii: {
     xs: "1px",

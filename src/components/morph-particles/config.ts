@@ -92,6 +92,8 @@ export const particlesMorphingConfig: ParticlesMorphParams = {
   ...particleStyles.hard,
 };
 
+export const morphingDebugFolderName = "🧬 Morphing";
+
 type NoUniformParams = "animationDuration"; // Excluded from the uniformsSet as it's managed outside the shader (gsap)
 
 export type ParticlesMorphUniforms = UniformSet<
@@ -111,7 +113,7 @@ export type ModelsGLB = {
     crocodile: Mesh;
     fox: Mesh;
     mimic: Mesh;
-    parrot: Mesh;
+    macaw: Mesh;
     plane: Mesh;
     r2d2: Mesh;
     rhino: Mesh;
@@ -163,9 +165,9 @@ export const credits: Record<MeshName, ModelCredit> = {
       profile: "https://sketchfab.com/AlessioPassera",
     },
   },
-  parrot: {
+  macaw: {
     model: {
-      title: "Parrot",
+      title: "Macaw",
       url: "https://sketchfab.com/3d-models/blue-and-yellow-macaw-ara-ararauna-027e6f37b2124bcab6a41635f6b5c699",
     },
     author: {

@@ -26,13 +26,13 @@ import { generateMorphTextures } from "../utils/morph-textures";
 import { useTexture } from "@react-three/drei";
 
 export function useMorphMaterial(resolution: number, meshes: MeshAsset[]) {
-  const noiseTex = useTexture("/noise.png", (tex) => {
+  const noiseTex = useTexture("/textures/noise.png", (tex) => {
     tex.wrapS = RepeatWrapping;
     tex.wrapT = RepeatWrapping;
     tex.colorSpace = NoColorSpace;
   });
 
-  const data = useMemo(
+  const dataTextures = useMemo(
     () => generateMorphTextures(meshes, resolution),
     [meshes, resolution],
   );
@@ -84,12 +84,12 @@ export function useMorphMaterial(resolution: number, meshes: MeshAsset[]) {
     // Morphing
     const shapeA = readLayer({
       layer: uniforms.meshAIndex,
-      tex: data.positions,
+      tex: dataTextures.positions,
       instanceId: index,
     });
     const shapeB = readLayer({
       layer: uniforms.meshBIndex,
-      tex: data.positions,
+      tex: dataTextures.positions,
       instanceId: index,
     });
 
@@ -99,12 +99,12 @@ export function useMorphMaterial(resolution: number, meshes: MeshAsset[]) {
     // Animation Randomization
     const uvsA = readLayer({
       layer: uniforms.meshAIndex,
-      tex: data.uvs,
+      tex: dataTextures.uvs,
       instanceId: index,
     });
     const uvsB = readLayer({
       layer: uniforms.meshBIndex,
-      tex: data.uvs,
+      tex: dataTextures.uvs,
       instanceId: index,
     });
 
@@ -120,7 +120,11 @@ export function useMorphMaterial(resolution: number, meshes: MeshAsset[]) {
       uniforms.animationProgress,
     );
 
-    const midFlight = progress.mul(progress.oneMinus()).mul(4.0); // Bell Curve. 1 in the middle of the animation.
+    /*
+     * Creates a bell curve that peaks at 1.0 when progress is 0.5
+     * Used to apply effects (like chaos/curl noise) only while the particles are traveling ↓
+     */
+    const midFlight = progress.mul(progress.oneMinus()).mul(4.0);
 
     const randomUV = vec2(hash(index), hash(index.add(100))).mul(10.0);
 
@@ -182,7 +186,10 @@ export function useMorphMaterial(resolution: number, meshes: MeshAsset[]) {
       },
       uniforms,
     };
-  }, [data, meshes, resolution, noiseTex]);
+  }, [dataTextures, meshes, resolution, noiseTex]);
 
-  return material;
+  return {
+    material,
+    dataTextures, // Exposed for debugging visualization
+  };
 }

@@ -13,9 +13,11 @@ import type { MeshAsset } from "../hooks/use-morph-meshes";
  *
  * Bakes mesh surface data into DataArrayTextures for GPU access.
  *
- * Since all mesh data is pre-loaded into separate texture layers, switching
- * or morphing between meshes is instantaneous (zero CPU overhead) by simply
- * reading from a different texture layer in the shader.
+ * All mesh data is pre-loaded into separate texture layers, enabling
+ * instantaneous transitions with zero CPU overhead. The shader simply
+ * reads from a different texture layer to morph the shape.
+ *
+ * Eliminates the need for expensive CPU-side geometry attribute swapping.
  *
  */
 // TODO: Move to Web Worker for high resolutions

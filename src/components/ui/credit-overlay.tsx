@@ -9,7 +9,7 @@ export default function CreditOverlay({
 }: CreditOverlayProps) {
   return (
     <div
-      className={`fixed z-99 px-4 py-3 text-xs text-white font-sans pointer-events-none ${className}`}
+      className={`fixed z-100 px-4 py-3 text-xs sm:text-base text-white font-sans pointer-events-none ${className}`}
       {...props}
     >
       <div className="pointer-events-auto">{children}</div>

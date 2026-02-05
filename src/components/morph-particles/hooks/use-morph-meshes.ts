@@ -29,7 +29,7 @@ export type MeshAsset = {
 };
 
 export function useMorphMeshes() {
-  const glb = useGLTF("/models.glb", "/draco/") as unknown as ModelsGLB;
+  const glb = useGLTF("/models/models.glb", "/draco/") as unknown as ModelsGLB;
 
   const meshes = useMemo<MeshAsset[]>(() => {
     return Object.entries(glb.nodes)
