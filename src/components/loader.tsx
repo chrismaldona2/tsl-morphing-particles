@@ -1,9 +1,15 @@
 import { useProgress } from "@react-three/drei";
+import { useState } from "react";
 
 export default function Loader() {
   const { active, progress } = useProgress();
+  const [maxProgress, setMaxProgress] = useState(0);
 
-  if (!active) return null;
+  if (progress > maxProgress) {
+    setMaxProgress(progress);
+  }
+
+  if (!active && maxProgress === 100) return null;
 
   return (
     <div className="absolute top-0 left-0 z-50 flex h-full w-full flex-col items-center justify-center gap-3 text-white">

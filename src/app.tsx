@@ -19,11 +19,19 @@ export default function App() {
 
       <CreditOverlay className="bottom-0 left-0">
         Shader by{" "}
-        <a href="" target="_blank" className="underline">
+        <a
+          href="https://x.com/chrismaldona2"
+          target="_blank"
+          className="underline"
+        >
           Chris
         </a>{" "}
         &#40;
-        <a href="" target="_blank" className="underline">
+        <a
+          href="https://github.com/chrismaldona2/tsl-morphing-particles"
+          target="_blank"
+          className="underline"
+        >
           Source Code
         </a>
         &#41;

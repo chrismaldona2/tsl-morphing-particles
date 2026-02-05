@@ -27,6 +27,7 @@ export default function Canvas(props: CanvasProps) {
         height: "100dvh",
         touchAction: "none",
       }}
+      dpr={[1, 1.5]}
       gl={async (props) => {
         const renderer = new WebGPURenderer({
           canvas: props.canvas as HTMLCanvasElement,
@@ -35,7 +36,6 @@ export default function Canvas(props: CanvasProps) {
           stencil: false,
           alpha: true,
         });
-        renderer.setPixelRatio(Math.min(2, devicePixelRatio));
         await renderer.init();
         return renderer;
       }}
