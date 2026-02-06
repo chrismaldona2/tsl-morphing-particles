@@ -155,8 +155,8 @@ export function useMorphMaterial(resolution: number, meshes: MeshAsset[]) {
     /*
      * Size
      */
-    const sizeA = posA.a;
-    const sizeB = posB.a;
+    const sizeA = shapeA.a;
+    const sizeB = shapeB.a;
     const currentSize = mix(sizeA, sizeB, progress);
     const scaleNode = uniforms.particleSize.mul(currentSize);
 

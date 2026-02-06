@@ -27,7 +27,7 @@ export const particleStyles: Record<string, ParticleStyleParams> = {
     particleSharpness: 1.0,
   },
   hard: {
-    particleSize: 0.03,
+    particleSize: 0.05,
     particleGlowSpread: 0.4,
     particleAlphaCutoff: 0.25,
     particleSharpness: 5.0,

@@ -4,6 +4,10 @@ import {
   morphingDebugFolderName,
 } from "../config";
 
+/**
+ * Separated to prevent circular dependencies (Material depends on Resolution) and isolate destructive state.
+ * Unlike animation controls, changing 'resolution' alters buffer allocations and requires a hard remount.
+ */
 export function useMorphSystemSettings() {
   const { resolution, debug } = useControls(morphingDebugFolderName, {
     resolution: {
