@@ -65,7 +65,9 @@ The memory footprint scales linearly with the number of meshes and exponentially
 - **Attributes:** 2 (Positions + UVs)
 - **Precision:** Float32 (16 bytes per pixel RGBA)
 
-$$16,384 \times 9 \times 2 \times 16 \approx \mathbf{4.7 \text{ MB}}$$
+<p align="center">
+  16,384 × 9 × 2 × 16 ≈ <strong>4.7 MB</strong>
+</p>
 
 ### Fill Rate
 
