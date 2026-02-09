@@ -77,7 +77,7 @@ export const particlesMorphingConfig: ParticlesMorphParams = {
    * Total Particles = resolution * resolution
    */
   resolution: 128,
-  transparent: true,
+  transparent: false,
   blending: AdditiveBlending,
   depthWrite: false,
   wireframe: false,
