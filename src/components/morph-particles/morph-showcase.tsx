@@ -30,10 +30,11 @@ export default function MorphShowcase(props: ThreeElements["group"]) {
       >
         <planeGeometry />
         <spriteNodeMaterial
-          depthWrite={controls.depthWrite}
+          transparent={controls.transparent}
           blending={controls.blending}
+          depthWrite={controls.depthWrite}
           wireframe={controls.wireframe}
-          transparent
+          alphaToCoverage={controls.alphaToCoverage}
           {...material.nodes}
         />
       </instancedMesh>

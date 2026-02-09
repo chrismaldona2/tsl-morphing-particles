@@ -167,6 +167,10 @@ export function useMorphControls(
             uniforms.particleAlphaCutoff.value = v;
           },
         },
+        transparent: {
+          label: "Transparent",
+          value: config.transparent,
+        },
         blending: {
           label: "Blending",
           options: {
@@ -182,6 +186,10 @@ export function useMorphControls(
         wireframe: {
           label: "Wireframe",
           value: config.wireframe,
+        },
+        alphaToCoverage: {
+          label: "Alpha To Coverage",
+          value: config.alphaToCoverage,
         },
       }),
       Oscillation: folder({

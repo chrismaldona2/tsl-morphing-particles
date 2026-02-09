@@ -45,9 +45,11 @@ export type ParticleStyleName = keyof typeof particleStyles;
 // System Params
 export type ParticlesSystemParams = {
   resolution: number;
+  transparent: boolean;
   blending: Blending;
   depthWrite: boolean;
   wireframe: boolean;
+  alphaToCoverage: boolean;
 };
 
 // Shader Params
@@ -75,9 +77,11 @@ export const particlesMorphingConfig: ParticlesMorphParams = {
    * Total Particles = resolution * resolution
    */
   resolution: 128,
+  transparent: true,
   blending: AdditiveBlending,
   depthWrite: false,
   wireframe: false,
+  alphaToCoverage: false,
 
   // Shader
   meshAIndex: 4,
