@@ -79,9 +79,9 @@ export const particlesMorphingConfig: ParticlesMorphParams = {
   resolution: 128,
   transparent: false,
   blending: AdditiveBlending,
-  depthWrite: false,
+  depthWrite: true,
   wireframe: false,
-  alphaToCoverage: false,
+  alphaToCoverage: true,
 
   // Shader
   meshAIndex: 4,
